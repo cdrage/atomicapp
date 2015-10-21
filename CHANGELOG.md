@@ -1,3 +1,65 @@
+## Atomic App 0.1.12 (10-21-2015)
+
+```
+Aaron Weitekamp <aweiteka@redhat.com> (2):
+      Add openshift LABELs
+      Add OpenShift LABEL information
+
+Charlie Drage <charlie@charliedrage.com> (9):
+      update testing
+      dup code
+      add two new cool maintainers!
+      fix artifact bug
+      Merge pull request #300 from charliedrage/fix-artifact-bug
+      Merge pull request #305 from charliedrage/make-makefile
+      update travis
+      add requirement doc
+      docker stop terminology fix
+
+Christoph Görn <goern@b4mad.net> (1):
+      add some issuestats.com stats
+
+Christoph Görn <goern@redhat.com> (13):
+      Merge pull request #284 from vpavlin/bug/dont-use-sudo
+      Merge pull request #229 from aweiteka/docs-init
+      Merge pull request #283 from vpavlin/bug/generate-kube-config
+      prepared Atomic App 0.1.11 release
+      Merge pull request #286 from goern/release-0-1-11-preparations
+      Merge pull request #292 from dustymabe/dusty-fix-small-bug
+      added merge rules
+      Merge pull request #313 from charliedrage/requirements-doc
+      Merge pull request #318 from charliedrage/docker-terminology-fix
+      Merge pull request #314 from charliedrage/travis-update
+      Merge pull request #312 from sub-mod/executable
+      Merge pull request #327 from coolsvap/pep8-issues
+      Merge pull request #334 from aweiteka/openshift-label
+
+Dusty Mabe <dusty@dustymabe.com> (3):
+      Fixes handling of directory for answers argument.
+      Reverts "artifact logic bugfix". Fixes #306
+      Merge pull request #307 from dustymabe/dusty-fix-install-questions
+
+Subin M <subin@apache.org> (1):
+      add new method find_executable_binary
+
+Swapnil Kulkarni <me@coolsvap.net> (1):
+      Small fix for pep8 error
+
+Vaclav Pavlin <vaclav.pavlin@gmail.com> (5):
+      Merge pull request #282 from charliedrage/fix-openshift-import
+      Merge pull request #287 from goern/more-badges
+      Merge pull request #298 from charliedrage/testing-update
+      Merge pull request #299 from goern/docs/changes-to-contributing.md-2
+      Merge pull request #302 from charliedrage/duplicate-code
+
+Václav Pavlín <vaclav.pavlin@gmail.com> (5):
+      Generate provider config for kubernetes if it does not exist
+      Do not use sudo in Docker provider
+      Use DEFAULT_PROVIDER_CONFIG in exception message
+      Mention config file generation in Kubes provider descripion
+      Fix bad indentation issue
+```
+
 # Atomic App Base Container Image
 
 Welcome to Atomic App, this is the reference implementation of the [Container
