@@ -16,11 +16,12 @@ ADD atomicapp/ /opt/atomicapp/atomicapp/
 ADD setup.py requirements.txt /opt/atomicapp/
 
 RUN apk add --update python && \
-    apk add wget ca-certificates && \
+    apk add curl wget ca-certificates && \
     wget "https://bootstrap.pypa.io/get-pip.py" -O /dev/stdout | python && \
     python setup.py install && \ 
-    apk del wget ca-certificates && \
-    apk add docker && \
+    curl -sSl https://get.docker.com/builds/Linux/x86_64/docker-1.8.3 > /usr/bin/docker && \
+    chmod a+x /usr/bin/docker && \
+    apk del wget curl ca-certificates && \
     rm /var/cache/apk/*
 
 # lets install pip, and gcc for the native extensions
@@ -35,4 +36,5 @@ WORKDIR /atomicapp
 VOLUME /atomicapp
 
 # the entrypoint
-ENTRYPOINT ["/usr/bin/atomicapp"]
+#ENTRYPOINT ["/usr/bin/atomicapp"]
+#ENTRYPOINT ["/usr/bin/atomicapp"]
