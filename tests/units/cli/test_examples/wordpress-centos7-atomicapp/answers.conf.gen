@@ -1,0 +1,8 @@
+[mariadb-atomicapp]
+db_pass = MySQLPass
+db_name = MySQLPass
+db_user = MySQLPass
+root_pass = MySQLPass
+[general]
+namespace = default
+provider = kubernetes

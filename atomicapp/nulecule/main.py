@@ -18,10 +18,13 @@ from atomicapp.nulecule.base import Nulecule
 from atomicapp.nulecule.exceptions import NuleculeException
 from atomicapp.utils import Utils
 
+from atomicapp.display import Display
+
 logger = logging.getLogger(__name__)
 
 
 class NuleculeManager(object):
+
     """
     Interface to install, run, stop a Nulecule application.
     """
@@ -35,6 +38,10 @@ class NuleculeManager(object):
                       container image name where a nulecule can be found
             destination: where to unpack a nulecule to if it isn't local
         """
+        display = Display()
+        display.info("Test!")
+        display.error("Test!")
+        display.debug("Test!")
         self.answers = copy.deepcopy(DEFAULT_ANSWERS)
         self.answers_format = None
         self.answers_file = None  # The path to an answer file

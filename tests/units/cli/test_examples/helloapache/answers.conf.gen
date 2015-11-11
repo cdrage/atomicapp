@@ -1,0 +1,6 @@
+[helloapache-app]
+image = centos/httpd
+hostport = 80
+[general]
+namespace = default
+provider = docker

@@ -26,7 +26,6 @@ import logging
 from lockfile import LockFile
 from lockfile import AlreadyLocked
 
-from atomicapp import set_logging
 from atomicapp.constants import (__ATOMICAPPVERSION__,
                                  __NULECULESPECVERSION__,
                                  ANSWERS_FILE,
@@ -36,6 +35,8 @@ from atomicapp.constants import (__ATOMICAPPVERSION__,
 from atomicapp.nulecule import NuleculeManager
 from atomicapp.nulecule.exceptions import NuleculeException
 from atomicapp.utils import Utils
+
+from atomicapp.display import Display, set_logging
 
 logger = logging.getLogger(__name__)
 
