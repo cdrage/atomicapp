@@ -2,7 +2,6 @@
 import anymarkup
 import copy
 import distutils.dir_util
-import logging
 import os
 
 from atomicapp.constants import (GLOBAL_CONF,
@@ -20,9 +19,6 @@ from atomicapp.utils import Utils
 
 from atomicapp.display import Display
 
-logger = logging.getLogger(__name__)
-
-
 class NuleculeManager(object):
 
     """
@@ -38,10 +34,7 @@ class NuleculeManager(object):
                       container image name where a nulecule can be found
             destination: where to unpack a nulecule to if it isn't local
         """
-        display = Display()
-        display.info("Test!")
-        display.error("Test!")
-        display.debug("Test!")
+        self.display= Display()
         self.answers = copy.deepcopy(DEFAULT_ANSWERS)
         self.answers_format = None
         self.answers_file = None  # The path to an answer file
@@ -77,8 +70,8 @@ class NuleculeManager(object):
             else:
                 self.app_path = Utils.getNewAppCacheDir(self.image)
 
-        logger.debug("NuleculeManager init app_path: %s", self.app_path)
-        logger.debug("NuleculeManager init    image: %s", self.image)
+        self.display.debug("NuleculeManager init app_path: %s" % self.app_path)
+        self.display.debug("NuleculeManager init    image: %s" % self.image)
 
         # Set where the main nulecule file should be
         self.main_file = os.path.join(self.app_path, MAIN_FILE)
@@ -110,7 +103,7 @@ class NuleculeManager(object):
         Returns:
             A Nulecule instance.
         """
-        logger.debug('Request to unpack to %s to %s' %
+        self.display.debug('Request to unpack to %s to %s' %
                      (self.image, self.app_path))
 
         # If the user provided an image then unpack it and return the
@@ -241,9 +234,9 @@ class NuleculeManager(object):
         Returns:
             None
         """
-        logger.debug("Writing answers to file.")
-        logger.debug("FILE: %s", path)
-        logger.debug("ANSWERS: %s", answers)
+        self.display.debug("Writing answers to file.")
+        self.display.debug("FILE: %s" % path)
+        self.display.debug("ANSWERS: %s" % answers)
         anymarkup.serialize_file(answers, path, format=answers_format)
 
     def _get_runtime_answers(self, config, cli_provider):

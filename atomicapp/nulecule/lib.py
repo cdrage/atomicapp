@@ -7,7 +7,6 @@ from atomicapp.plugin import Plugin
 plugin = Plugin()
 plugin.load_plugins()
 
-
 class NuleculeBase(object):
     """
     This is the base class for Nulecule and NuleculeComponent in

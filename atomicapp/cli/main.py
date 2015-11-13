@@ -40,6 +40,7 @@ from atomicapp.display import Display, set_logging
 
 logger = logging.getLogger(__name__)
 
+display = Display()
 
 def print_app_location(app_path):
     if app_path.startswith(HOST_DIR):
@@ -75,9 +76,11 @@ def cli_run(args):
         print_app_location(nm.app_path)
         sys.exit(0)
     except NuleculeException as e:
+        display.error(e)
         logger.error(e)
         sys.exit(1)
     except Exception as e:
+        display.error(e)
         logger.error(e, exc_info=True)
         sys.exit(1)
 

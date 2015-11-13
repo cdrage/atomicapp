@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import anymarkup
 import copy
-import logging
 import os
 
 from collections import defaultdict
@@ -17,10 +16,10 @@ from atomicapp.utils import Utils
 from atomicapp.nulecule.lib import NuleculeBase
 from atomicapp.nulecule.container import DockerHandler
 from atomicapp.nulecule.exceptions import NuleculeException
+from atomicapp.display import Display
 
 from jsonpointer import resolve_pointer, set_pointer, JsonPointerException
 
-logger = logging.getLogger(__name__)
 
 
 class Nulecule(NuleculeBase):
@@ -51,6 +50,7 @@ class Nulecule(NuleculeBase):
             A Nulecule instance
         """
         super(Nulecule, self).__init__(basepath, params, namespace)
+        self.display = Display()
         self.id = id
         self.specversion = specversion
         self.metadata = metadata
@@ -79,7 +79,7 @@ class Nulecule(NuleculeBase):
         Returns:
             A Nulecule instance, or None in case of dry run.
         """
-        logger.info('Unpacking image: %s to %s' % (image, dest))
+        Display().info('Unpacking image: %s to %s' % (image, dest))
         docker_handler = DockerHandler(dryrun=dryrun)
         docker_handler.pull(image)
         docker_handler.extract(image, APP_ENT_PATH, dest, update)
@@ -107,6 +107,7 @@ class Nulecule(NuleculeBase):
             from image).
         """
         nulecule_path = os.path.join(src, MAIN_FILE)
+        Display().info('Loading Nulecule from path: %s' % nulecule_path)
         if dryrun and not os.path.exists(nulecule_path):
             raise NuleculeException("Installed Nulecule components are required to initiate dry-run")
         nulecule_data = anymarkup.parse_file(nulecule_path)
@@ -231,6 +232,7 @@ class NuleculeComponent(NuleculeBase):
     def __init__(self, name, basepath, source=None, params=None,
                  artifacts=None, config=None):
         super(NuleculeComponent, self).__init__(basepath, params, name)
+        self.display = Display()
         self.name = name
         self.source = source
         self.artifacts = artifacts
@@ -243,7 +245,7 @@ class NuleculeComponent(NuleculeBase):
         """
         if self.source:
             if nodeps:
-                logger.info(
+                self.display.info(
                     'Skipping to load external application: %s' % self.name)
             else:
                 self.load_external_application(dryrun)
@@ -300,13 +302,13 @@ class NuleculeComponent(NuleculeBase):
         external_app_path = os.path.join(
             self.basepath, EXTERNAL_APP_DIR, self.name)
         if os.path.isdir(external_app_path) and not update:
-            logger.info(
+            self.display.info(
                 'Found existing external application for %s. '
                 'Loading it.' % self.name)
             nulecule = Nulecule.load_from_path(
                 external_app_path, dryrun=dryrun, update=update)
         elif not dryrun:
-            logger.info('Pulling external application for %s.' % self.name)
+            self.display.info('Pulling external application for %s.' % self.name)
             nulecule = Nulecule.unpack(
                 self.source,
                 external_app_path,
@@ -370,7 +372,7 @@ class NuleculeComponent(NuleculeBase):
             # Convert dict if the Nulecule file references "resource"
             if isinstance(artifact, dict) and artifact.get(RESOURCE_KEY):
                 artifact = artifact[RESOURCE_KEY]
-                logger.debug("Resource xpath added: %s" % artifact)
+                self.display.debug("Resource xpath added: %s" % artifact)
 
             # Sanitize the file structure
             if isinstance(artifact, basestring):
@@ -388,7 +390,7 @@ class NuleculeComponent(NuleculeBase):
                             inherited_provider_key)
                     )
             else:
-                logger.error('Invalid artifact file')
+                self.display.error('Invalid artifact file')
         return artifact_paths
 
     def grab_artifact_params(self, provider):
@@ -434,7 +436,7 @@ class NuleculeComponent(NuleculeBase):
         obj = anymarkup.parse(content)
 
         if type(obj) != dict:
-            logger.debug("Artifact file not json/haml, assuming it's $VARIABLE substitution")
+            self.display.debug("Artifact file not json/haml, assuming it's $VARIABLE substitution")
             return content
 
         if params is None:
@@ -444,17 +446,17 @@ class NuleculeComponent(NuleculeBase):
         for name, pointers in params.items():
 
             if not pointers:
-                logger.warning("Could not find pointer for %s" % name)
+                self.display.warning("Could not find pointer for %s" % name)
                 continue
 
             for pointer in pointers:
                 try:
                     resolve_pointer(obj, pointer)
                     set_pointer(obj, pointer, name)
-                    logger.debug("Replaced %s pointer with %s param" % (pointer, name))
+                    self.display.debug("Replaced %s pointer with %s param" % (pointer, name))
                 except JsonPointerException:
-                    logger.debug("Error replacing %s with %s" % (pointer, name))
-                    logger.debug("Artifact content: %s", obj)
+                    self.display.debug("Error replacing %s with %s" % (pointer, name))
+                    self.display.debug("Artifact content: %s" % obj)
                     raise NuleculeException("Error replacing pointer %s with %s." % (pointer, name))
         return anymarkup.serialize(obj, format="json")
 

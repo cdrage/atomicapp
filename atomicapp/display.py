@@ -33,6 +33,7 @@ class Display:
     def __init__(self):
         self.logger = logging.getLogger("atomicapp")
         self.verbose_level = self.logger.getEffectiveLevel()
+        print ("LEVELL!!!!!!! %s" % self.verbose_level)
 
     def display(self, msg, color='white', stderr=False):
         msg = self._colorize(self._make_unicode(msg), color)
@@ -44,11 +45,13 @@ class Display:
 
     def debug(self, msg, *args):
         self.logger.debug(msg)
-        self.display("[DEBUG] %6d %0.2f: %s" % (os.getpid(), time.time(), msg), 'purple')
+        if self.verbose_level is 10:
+            self.display("[DEBUG] %6d %0.2f: %s" % (os.getpid(), time.time(), msg), 'purple')
 
     def verbose(self, msg, *args):
         self.logger.info(msg)
-        self.display("[VERBOSE]: %s" % msg, 'purple')
+        if self.verbose_level is 10:
+            self.display("[VERBOSE]: %s" % msg, 'purple')
 
     def info(self, msg, *args):
         self.logger.info(msg)

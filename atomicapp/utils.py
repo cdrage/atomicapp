@@ -127,7 +127,6 @@ class Utils(object):
 
         Args:
             image (str): The name of the image the app is in
-
         Returns:
             path (str): The path to the unique directory
         """

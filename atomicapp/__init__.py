@@ -38,4 +38,3 @@ handler = logging.FileHandler(path)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 logging.getLogger("atomicapp").addHandler(handler)
-logging.getLogger("atomicapp").propagate = True

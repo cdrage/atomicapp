@@ -21,14 +21,11 @@
 
 from __future__ import print_function
 import os
-
 import imp
 
-import logging
 from utils import Utils
 from constants import HOST_DIR, PROVIDER_CONFIG_KEY
-
-logger = logging.getLogger(__name__)
+from atomicapp.display import Display
 
 
 class Provider(object):
@@ -50,6 +47,7 @@ class Provider(object):
         self.__artifacts = artifacts
 
     def __init__(self, config, path, dryrun):
+        self.display = Display()
         self.config = config
         self.path = path
         self.dryrun = dryrun
@@ -75,7 +73,7 @@ class Provider(object):
             if self.container:
                 self.config_file = os.path.join(Utils.getRoot(), self.config_file.lstrip("/"))
         else:
-            logger.warning("Configuration option '%s' not found" % PROVIDER_CONFIG_KEY)
+            self.display.warning("Configuration option '%s' not found" % PROVIDER_CONFIG_KEY)
 
     def checkConfigFile(self):
         if not self.config_file:
@@ -89,8 +87,8 @@ class Provider(object):
                 % (self.config_file, PROVIDER_CONFIG_KEY))
 
     def undeploy(self):
-        logger.warning(
-            "Call to undeploy for provider %s failed - this action is not implemented",
+        self.display.warning(
+            "Call to undeploy for provider %s failed - this action is not implemented" %
             self.key)
 
     def loadArtifact(self, path):
@@ -103,7 +101,7 @@ class Provider(object):
         if not os.path.isdir(os.path.dirname(path)):
             os.makedirs(os.path.dirname(path))
         with open(path, "w") as fp:
-            logger.debug("Writing artifact to %s" % path)
+            self.display.debug("Writing artifact to %s" % path)
             fp.write(data)
 
     def __str__(self):
@@ -122,12 +120,13 @@ class Plugin(object):
     plugins = []
 
     def __init__(self, ):
+        self.display = Display()
         pass
 
     def load_plugins(self):
         run_path = os.path.dirname(os.path.realpath(__file__))
         providers_dir = os.path.join(run_path, "providers")
-        logger.debug("Loading providers from %s", providers_dir)
+        self.display.debug("Loading providers from %s" % providers_dir)
 
         plugin_classes = {}
         plugin_class = globals()["Provider"]
@@ -139,7 +138,7 @@ class Plugin(object):
                     f_module = imp.load_source(
                         module_name, os.path.join(providers_dir, f))
                 except (IOError, OSError, ImportError) as ex:
-                    logger.warning("can't load module '%s': %s", f, repr(ex))
+                    self.display.warning("can't load module '%s': %s" % (f, repr(ex)))
                     continue
 
                 for name in dir(f_module):
@@ -161,5 +160,5 @@ class Plugin(object):
     def getProvider(self, provider_key):
         for key, provider in self.plugins.iteritems():
             if key == provider_key:
-                logger.debug("Found provider %s", provider)
+                self.display.debug("Found provider %s" % provider)
                 return provider
