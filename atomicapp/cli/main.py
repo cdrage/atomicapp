@@ -25,7 +25,7 @@ import logging
 from lockfile import LockFile
 from lockfile import AlreadyLocked
 
-from atomicapp import set_logging
+from atomicapp.display import set_logging
 from atomicapp.constants import (__ATOMICAPPVERSION__,
                                  __NULECULESPECVERSION__,
                                  ANSWERS_FILE,
@@ -421,12 +421,7 @@ class CLI():
                 args.cli_answers[item] = getattr(args, item)
 
         # Set logging level
-        if args.verbose:
-            set_logging(level=logging.DEBUG)
-        elif args.quiet:
-            set_logging(level=logging.WARNING)
-        else:
-            set_logging(level=logging.INFO)
+        set_logging(args)
 
         # Now that we have set the logging level let's print out the cmdline
         logger.debug("Final parsed cmdline: {}".format(' '.join(cmdline)))

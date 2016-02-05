@@ -71,3 +71,21 @@ ACCESS_TOKEN_KEY = "accesstoken"
 PROVIDER_CONFIG_KEY = "providerconfig"
 PROVIDER_TLS_VERIFY_KEY = "providertlsverify"
 PROVIDER_CA_KEY = "providercafile"
+
+LOG_FILE = "/var/log/atomicapp.log"
+LOG_SYSLOG = "/dev/log"
+LOG_NAME = "atomicapp"
+LOG_CUSTOM_NAME = "atomicapp-custom"
+LOG_LEVELS = {
+    "notset": 0,
+    "debug": 10,
+    "info": 20,
+    "warning": 30,
+    "error": 40,
+    "critical": 50,
+    "default": 90,
+    "cockpit": 91,
+    "stdout": 92,
+    "syslog": 93,
+    "none": 94
+}

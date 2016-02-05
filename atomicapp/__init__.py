@@ -16,26 +16,25 @@
  You should have received a copy of the GNU Lesser General Public License
  along with Atomic App. If not, see <http://www.gnu.org/licenses/>.
 """
-
 import logging
+import os
+from atomicapp.constants import LOG_FILE, LOG_NAME
 
+# Let's make sure logging works upon first startup
+path = LOG_FILE
 
-def set_logging(name="atomicapp", level=logging.DEBUG):
-    # create logger
-    logger = logging.getLogger()
-    logger.handlers = []
-    logger.setLevel(level)
+# Touch if it doesn't exist
+if not (os.path.exists(path)):
+    try:
+        os.utime(path, None)
+    except:
+        open(path, 'a').close()
 
-    # create console handler
-    ch = logging.StreamHandler()
+if not (os.access(path, os.W_OK)):
+    raise RuntimeError("%s is not writeable" % path)
 
-    # create formatter
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-    # add formatter to ch
-    ch.setFormatter(formatter)
-
-    # add ch to logger
-    logger.addHandler(ch)
-
-set_logging(level=logging.DEBUG)  # override this however you want
+# Setup log handling
+handler = logging.FileHandler(path)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logging.getLogger(LOG_NAME).addHandler(handler)
