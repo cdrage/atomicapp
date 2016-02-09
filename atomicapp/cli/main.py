@@ -249,6 +249,15 @@ class CLI():
             "--providerapi",
             dest="providerapi",
             help='Value for providerapi answers option.')
+        globals_parser.add_argument(
+            "--logging-output",
+            dest="logging_output",
+            choices=['cockpit', 'stdout', 'syslog', 'none'],
+            help="Override the default logging output."
+                 "stdout: We will only log to stdout/stderr"
+                 "cockpit: Used with cockpit integration"
+                 "syslog: Outputs to OS default syslog daemon"
+                 "none: atomicapp will disable any logging")
 
         # === "run" SUBPARSER ===
         run_subparser = toplevel_subparsers.add_parser(
