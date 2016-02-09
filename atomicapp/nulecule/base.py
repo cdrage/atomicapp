@@ -24,6 +24,7 @@ from atomicapp.nulecule.lib import NuleculeBase
 from atomicapp.nulecule.container import DockerHandler
 from atomicapp.nulecule.exceptions import NuleculeException
 from atomicapp.providers.openshift import OpenShiftProvider
+from atomicapp.display import Display
 
 from jsonpointer import resolve_pointer, set_pointer, JsonPointerException
 
@@ -100,6 +101,7 @@ class Nulecule(NuleculeBase):
             docker_handler = DockerHandler(dryrun=dryrun)
             docker_handler.pull(image)
             docker_handler.extract(image, APP_ENT_PATH, dest, update)
+            Display().info("All dependencies installed successfully.", "cockpit")
         return cls.load_from_path(
             dest, config=config, namespace=namespace, nodeps=nodeps,
             dryrun=dryrun, update=update)
@@ -159,6 +161,7 @@ class Nulecule(NuleculeBase):
         # Process components
         for component in self.components:
             component.run(provider_key, dryrun)
+            self.display.info("Component %s installed successfully" % provider_key, "cockpit")
 
     def stop(self, provider_key=None, dryrun=False):
         """
@@ -266,11 +269,13 @@ class NuleculeComponent(NuleculeBase):
         self.rendered_artifacts = defaultdict(list)
         self._app = None
         self.config = config
+        self.display = Display()
 
     def load(self, nodeps=False, dryrun=False):
         """
         Load external application of the Nulecule component.
         """
+        self.display.info("Loading app %s ." % self.name, "cockpit")
         if self.source:
             if nodeps:
                 logger.info(
@@ -282,6 +287,7 @@ class NuleculeComponent(NuleculeBase):
         """
         Run the Nulecule component with the specified provider,
         """
+        self.display.info("Deploying component %s ..." % self.name, "cockpit")
         if self._app:
             self._app.run(provider_key, dryrun)
             return
@@ -346,6 +352,7 @@ class NuleculeComponent(NuleculeBase):
                 update=update
             )
         self._app = nulecule
+        self.display.info("Copied app successfully.", "cockpit")
 
     @property
     def components(self):

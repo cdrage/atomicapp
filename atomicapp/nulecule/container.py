@@ -7,16 +7,19 @@ from atomicapp.constants import (APP_ENT_PATH,
                                  MAIN_FILE)
 from atomicapp.utils import Utils
 from atomicapp.nulecule.exceptions import NuleculeException
+from atomicapp.display import Display
 
 logger = logging.getLogger(__name__)
 
 
 class DockerHandler(object):
+
     """Interface to interact with Docker."""
 
     def __init__(self, dryrun=False, docker_cli='/usr/bin/docker'):
         self.dryrun = dryrun
         self.docker_cli = docker_cli
+        self.display = Display()
 
         # Check to make sure the docker client in the container and
         # the server on the host can communicate.
@@ -46,12 +49,14 @@ class DockerHandler(object):
         """
         if not self.is_image_present(image) or update:
             logger.info('Pulling Docker image: %s' % image)
+            self.display.info('Pulling Docker image: %s' % image, "cockpit")
             pull_cmd = [self.docker_cli, 'pull', image]
             logger.debug(' '.join(pull_cmd))
             if not self.dryrun:
                 subprocess.call(pull_cmd)
         else:
             logger.info('Skipping pulling Docker image: %s' % image)
+            self.display.info('Skipping pulling Docker image: %s' % image, "cockpit")
 
     def extract(self, image, source, dest, update=False):
         """
@@ -104,6 +109,7 @@ class DockerHandler(object):
         if os.path.exists(mainfile):
             existing_id = Utils.getAppId(mainfile)
             new_id = Utils.getAppId(tmpmainfile)
+            self.display.info("Loading app_id %s ." % new_id, "cockpit")
             if existing_id != new_id:
                 raise NuleculeException(
                     "Existing app (%s) and requested app (%s) differ" %
