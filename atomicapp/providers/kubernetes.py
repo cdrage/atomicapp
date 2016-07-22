@@ -39,7 +39,6 @@ cockpit_logger = logging.getLogger(LOGGER_COCKPIT)
 logger = logging.getLogger(LOGGER_DEFAULT)
 
 
-class KubernetesProvider(Provider):
 
     """Operations for Kubernetes provider is implemented in this class.
     This class implements deploy, stop and undeploy of an atomicapp on
